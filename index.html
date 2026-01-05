@@ -8,15 +8,15 @@
     <style>
         /* ----- 디자인 테마 ----- */
         :root {
-            --bg-color: #FFF8ED;
-            --btn-color: #A67B5B;
-            --btn-hover: #8E6548;
-            --text-main: #2C2C2C;
-            --text-sub: #555555;
-            --card-bg: #FFFFFF;
-            --shadow: 0 4px 12px rgba(166, 123, 91, 0.15);
-            --analysis-bg: #F5F5F5; /* 뇌과학 분석 배경 */
-            --presc-bg: #FFF8E7;    /* 처방 배경 */
+            --bg-color: #FFF8ED;       /* 배경: 따뜻한 크림색 */
+            --btn-color: #A67B5B;      /* 포인트: 샌드 브라운 */
+            --btn-hover: #8E6548;      /* 호버: 딥 브라운 */
+            --text-main: #2C2C2C;      /* 텍스트: 짙은 차콜 */
+            --text-sub: #555555;       /* 서브 텍스트 */
+            --card-bg: #FFFFFF;        /* 카드 배경 */
+            --shadow: 0 4px 20px rgba(166, 123, 91, 0.15);
+            --analysis-bg: #F4F4F4;    /* 분석 박스 배경 */
+            --presc-bg: #FFF9F0;       /* 처방 박스 배경 */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
@@ -35,12 +35,12 @@
             display: flex; flex-direction: column;
         }
 
+        /* 화면 전환 애니메이션 */
         .screen {
             display: none; flex-direction: column; width: 100%; min-height: 100%;
             padding: 30px 24px;
             animation: fadeIn 0.4s ease-out;
         }
-        
         .screen.active { display: flex; }
 
         @keyframes fadeIn {
@@ -52,6 +52,7 @@
         #start-screen { align-items: center; text-align: center; justify-content: center; padding-top: 60px; }
         .main-title { font-size: 2.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 10px; letter-spacing: -1px; }
         .sub-title { font-size: 1.05rem; color: var(--text-sub); line-height: 1.6; margin-bottom: 50px; font-weight: 400; }
+        
         .start-btn, .next-btn {
             background-color: var(--btn-color); color: white;
             font-size: 1.2rem; font-weight: 700; padding: 18px 0;
@@ -63,11 +64,12 @@
         .illustration-box { width: 220px; height: 220px; margin-bottom: 40px; opacity: 0.9; }
 
         /* [2] 질문 화면 */
-        .top-bar { display: flex; align-items: center; margin-bottom: 40px; }
+        .top-bar { display: flex; align-items: center; margin-bottom: 30px; }
         .progress-bg { flex: 1; height: 6px; background-color: #E6DCCF; border-radius: 3px; margin: 0 12px; overflow: hidden; }
         .progress-bar { height: 100%; background-color: var(--btn-color); width: 0%; transition: width 0.4s ease; }
         .q-num { font-size: 1.1rem; font-weight: 800; color: var(--btn-color); margin-bottom: 12px; letter-spacing: 1px; }
         .q-text { font-size: 1.35rem; font-weight: 700; line-height: 1.5; color: var(--text-main); margin-bottom: 40px; word-break: keep-all; }
+        
         .answer-list { display: flex; flex-direction: column; gap: 12px; }
         .answer-btn {
             width: 100%; padding: 18px 24px;
@@ -78,29 +80,29 @@
         }
         .answer-btn:hover { border-color: var(--btn-color); background-color: #FAF6F3; color: var(--btn-color); transform: translateY(-2px); }
 
-        /* [NEW] 피드백 화면 (분석 및 처방) */
+        /* [3] 피드백 화면 (분석 & 처방) */
         #feedback-screen { padding-top: 40px; }
         .feedback-card {
             background-color: var(--card-bg); border-radius: 24px; padding: 25px;
             box-shadow: var(--shadow); margin-bottom: 20px;
         }
-        .feedback-label { font-size: 0.9rem; font-weight: 800; color: #888; margin-bottom: 10px; display: block; }
-        .feedback-title { font-size: 1.3rem; font-weight: 800; color: var(--btn-color); margin-bottom: 15px; }
+        .feedback-label { font-size: 0.9rem; font-weight: 800; color: #999; margin-bottom: 10px; display: block; letter-spacing: 1px;}
+        .feedback-title { font-size: 1.4rem; font-weight: 800; color: var(--btn-color); margin-bottom: 20px; }
         
         .analysis-box {
-            background-color: var(--analysis-bg); border-radius: 16px; padding: 20px; margin-bottom: 20px;
+            background-color: var(--analysis-bg); border-radius: 16px; padding: 20px; margin-bottom: 16px;
         }
-        .analysis-header { font-weight: 800; color: #555; margin-bottom: 8px; font-size: 1rem; }
+        .analysis-header { font-weight: 800; color: #555; margin-bottom: 8px; font-size: 1rem; display: flex; align-items: center; gap: 5px; }
         .analysis-text { font-size: 0.95rem; line-height: 1.6; color: #444; word-break: keep-all; }
 
         .presc-box {
             background-color: var(--presc-bg); border-radius: 16px; padding: 20px;
             border-left: 5px solid var(--btn-color);
         }
-        .presc-header { font-weight: 800; color: var(--btn-color); margin-bottom: 8px; font-size: 1rem; display: flex; align-items: center; gap: 6px; }
-        .presc-text { font-size: 1rem; line-height: 1.6; color: #333; word-break: keep-all; font-weight: 500; }
+        .presc-header { font-weight: 800; color: var(--btn-color); margin-bottom: 8px; font-size: 1rem; display: flex; align-items: center; gap: 5px; }
+        .presc-text { font-size: 1rem; line-height: 1.6; color: #333; word-break: keep-all; font-weight: 600; }
 
-        /* [3] 결과 화면 */
+        /* [4] 결과 화면 */
         .result-card { background-color: var(--card-bg); width: 100%; padding: 40px 24px; border-radius: 30px; box-shadow: var(--shadow); margin-bottom: 40px; text-align: center; }
         .total-score { font-size: 4rem; font-weight: 900; color: var(--btn-color); line-height: 1; margin: 15px 0 5px; }
         .level-badge { display: inline-block; padding: 8px 18px; background-color: #F5EBE0; color: #8E6548; border-radius: 30px; font-weight: 700; margin-bottom: 25px; }
@@ -124,7 +126,7 @@
                 </svg>
             </div>
             <h1 class="main-title">수양력 점검기</h1>
-            <p class="sub-title">뇌과학과 정산종사님 법문의 만남<br>당신의 마음 근육은 튼튼한가요?</p>
+            <p class="sub-title">뇌과학과 마음 공부의 만남<br>당신의 마음 근육은 안녕하신가요?</p>
             <button class="start-btn" onclick="startTest()">측정 시작하기</button>
         </section>
 
@@ -165,7 +167,7 @@
                 <div class="level-desc" id="level-desc">결과 설명</div>
             </div>
             <div style="text-align:center; color:#555; margin-bottom:20px; line-height:1.6;">
-                수고하셨습니다!<br>문항별 처방을 다시 되새기며<br>마음 근육을 키워보세요.
+                수고하셨습니다!<br>문항별 닥터의 처방을 다시 되새기며<br>단단한 마음 근육을 키워보세요.
             </div>
             <button class="start-btn" onclick="restartTest()">다시 검사하기</button>
         </section>
@@ -173,74 +175,75 @@
     </div>
 
     <script>
-        // 1. 상세 데이터 (질문 + 분석 + 처방)
+        // ----------------------------------------------------
+        // [1] 데이터: 질문, 분석, 처방 (최종 확정본)
+        // ----------------------------------------------------
         const questions = [
             { 
                 title: "이완 실패",
                 q: "잠자리에 누웠을 때, 생각(걱정)이 꼬리를 물어 10분 넘게 잠들지 못하고 스마트폰을 보거나 뒤척이시나요?", 
-                analysis: "잠들기 전 뇌파는 이완 상태인 알파파로 넘어가야 합니다. 10분 이상 생각이 꼬리를 문다는 것은 뇌의 'DMN(디폴트 모드 네트워크)'이 과열되어, 침대를 '휴식 공간'이 아닌 '전장'으로 인식하고 있다는 증거입니다.",
-                presc: "\"뇌의 전원을 끄는 의식을 만드세요.\"<br>잠들기 30분 전, 걱정거리를 종이에 적어두는 '브레인 덤프'를 하세요. 뇌에게 \"내일 아침에 다시 하자\"고 선언하면 뇌는 비로소 안심하고 전원을 끕니다."
+                analysis: "10분이 넘도록 생각이 멈추지 않는 것은 뇌의 'DMN(디폴트 모드 네트워크)'이 과열되어 침대를 '치열한 생각의 전장'으로 착각하고 있다는 증거입니다. 이때 스마트폰을 켜는 것은 뇌를 강제로 각성시켜 수면을 방해하는 악순환을 만듭니다.",
+                presc: "\"뇌의 '종료 버튼'을 확실히 눌러주세요.\"<br><br>생각을 멈추려 애쓰지 말고, 잠들기 30분 전 해야 할 일을 종이에 적는 '브레인 덤프'를 하세요. 그리고 선언하세요.<br>\"종이에 다 적어뒀으니 내일 아침에 처리하자. 이제는 온전히 쉴 시간이야.\""
             },
             { 
                 title: "도파민 중독",
                 q: "엘리베이터나 신호 대기 등 3~5분의 짧은 시간, 지금 이 순간에 온전히 머무르지 못하고 스마트폰을 보거나 다른 생각에 빠지시나요?", 
-                analysis: "예측 불가능한 보상(알림)에 중독된 뇌는 3분의 공백조차 견디지 못합니다. 이는 뇌의 '지루함 내성 회로'가 퇴화하여 '팝콘 브레인' 현상이 일어난 것입니다.",
-                presc: "\"지루함을 환영하십시오.\"<br>오늘 하루 딱 한 번, 엘리베이터 안에서 핸드폰 대신 거울 속 내 눈을 3초만 바라보세요. 그 짧은 '멍 때리기'가 과열된 뇌에는 최고의 영양제입니다."
+                analysis: "3~5분의 짧은 공백조차 견디지 못하는 것은 뇌의 '지루함 내성 회로'가 퇴화하여 '팝콘 브레인' 현상이 일어난 것입니다. 이는 스마트폰을 보는 것이 아니라 '지금 이 순간(Here and Now)'으로부터 도망치고 있는 상태입니다.",
+                presc: "\"지루함을 '뇌의 청소 시간'으로 활용하세요.\"<br><br>뇌는 아무것도 하지 않을 때 정보를 정리합니다. 오늘부터 하루 딱 한 번, 핸드폰 대신 '지금 내 발바닥의 느낌'이나 '나의 호흡'에 집중하는 시간을 1분만 가져보세요. 그 짧은 '디지털 공백'이 최고의 영양제가 됩니다."
             },
             { 
                 title: "회복탄력성",
                 q: "과거의 실수나 좋지 않은 기억이 떠오르면, 그 감정을 금방 털어내지 못하고 5분 넘게 현재의 기분에 영향을 받으시나요?", 
-                analysis: "뇌과학적으로 감정의 화학물질이 뇌를 휩쓸고 지나가는 시간은 단 90초입니다. 5분 넘게 우울하다면, 생리적 현상이 아니라 당신이 그 기억을 반추하며 스스로 불에 기름을 붓고 있는 것입니다.",
-                presc: "\"90초 룰을 기억하세요.\"<br>화가 날 때 \"딱 90초만 기다리자\"라고 생각하며 심호흡을 세 번 하세요. 거짓말처럼 이성의 뇌(전전두엽)가 다시 켜집니다."
+                analysis: "뇌과학적으로 감정의 화학물질이 뇌를 휩쓸고 지나가는 시간은 단 90초입니다. 5분 넘게 우울하다면, 생리적 현상이 아니라 당신이 그 기억을 반추(Rumination)하며 스스로 불에 기름을 붓고 있는 것입니다.",
+                presc: "\"90초 룰을 기억하고, '재방송'임을 알아차리세요.\"<br><br>불쾌한 기억이 떠오르면 깊은 심호흡을 세 번 하세요. 뇌가 호흡에 집중하며 90초를 보내면 감정의 파도는 잠잠해지고, 이성의 뇌(전전두엽)가 다시 켜집니다. 깨어난 전전두엽에게 주도권을 쥐여주세요."
             },
             { 
                 title: "주의력 잔여물",
                 q: "업무나 공부 중 알림을 확인한 뒤 흩어진 마음을 다잡는 데 2분 이상 걸리거나, 알림이 없어도 수시로 연락이나 SNS, 숏츠 등이 궁금해 일에만 온전히 집중하지 못하시나요?", 
-                analysis: "알림을 확인하고 돌아갈 때 뇌에는 '주의력 잔여물'이라는 찌꺼기가 남습니다. 잦은 전환은 IQ를 떨어뜨리며, 숏츠가 궁금한 것은 뇌가 깊은 사고를 거부하는 '인지적 비효율' 상태입니다.",
-                presc: "\"방해 금지 모드를 선물하세요.\"<br>뇌는 주의력을 전환할 때 엄청난 에너지를 씁니다. 중요한 일을 할 때는 딱 1시간만이라도 알림을 끄세요."
+                analysis: "알림을 확인하고 돌아갈 때 뇌에는 '주의력 잔여물'이 남습니다. 특히 숏츠는 뇌의 '새로움 추구 본능'을 자극하여 계속 도파민을 찾게 만듭니다. 2분 안에 집중하지 못하는 것은 뇌가 '인지적 전환 비용'을 과다하게 치르고 있다는 신호입니다.",
+                presc: "\"뇌에게 '방해 금지 구역'을 선물하세요.\"<br><br>미네소타 대학 연구에 따르면 잦은 전환은 IQ를 10점 이상 떨어뜨립니다. 중요한 일을 할 때는 스마트폰을 치우거나 '방해 금지 모드'를 켜세요. '지금은 오직 이것만 한다'는 환경 설정이 뇌의 효율을 지키는 유일한 길입니다."
             },
             { 
                 title: "충동 통제",
                 q: "쇼핑이나 야식, 게임 등 순간적인 충동이 일어날 때, '정말 필요한가?' 하고 잠시 멈춰 생각하지 못하고 바로 행동으로 옮겨 후회한 적이 있으신가요?", 
-                analysis: "도파민은 \"저걸 사면 행복할 거야\"라고 유혹(Wanting)하지만, 막상 사고 나면 행복감은 금방 사라집니다. 이 '예측 오류'에 속아 자극과 반응 사이의 '멈춤' 버튼이 고장 난 상태입니다.",
-                presc: "\"욕구의 파도타기.\"<br>충동은 파도와 같아서 세게 밀려왔다가 반드시 잠잠해집니다. \"딱 10분만 있다가 다시 생각하자\"고 미루면, 그 파도는 거품처럼 사라집니다."
+                analysis: "도파민은 \"저걸 사면 행복할 거야\"라고 유혹(Wanting)하지만, 막상 얻고 나면 행복감(Liking)은 금방 사라집니다. 이 뇌의 '예측 오류'에 속아, 자극과 반응 사이의 '멈춤' 버튼이 고장 난 상태입니다.",
+                presc: "\"파도에서 벗어나 해안가로 나오세요.\"<br><br>충동은 파도와 같아서 세게 밀려왔더라도 반드시 잠잠해집니다. 휩쓸리지 말고 해안가로 나와 쉬세요. 한 시간 후, 혹은 다음 날 아침에 다시 생각해보세요. 그 뜨거운 파도는 거짓말처럼 사라져 있을 것입니다."
             },
             { 
                 title: "감정 전이",
                 q: "직장이나 밖에서 기분 나쁜 일을 겪었을 때, 그 감정을 잘 추스르지 못해 가족이나 만만한 사람에게 퉁명스럽게 대하거나, 혹은 감정이 바로 정리되지 않고 앙금처럼 마음에 오래 남아있나요?", 
-                analysis: "스트레스를 받으면 뇌는 그 에너지를 배출할 '안전한 대상(가족 등)'을 찾습니다. 이를 '전위(Displacement)'라고 합니다. 이는 뇌가 감정의 칸막이를 세우지 못해 일어나는 '감정 오염'입니다.",
-                presc: "\"퇴근길의 리셋 버튼.\"<br>현관문을 소독기라고 상상하세요. 밖에서의 감정은 문밖에서 털고, 손을 씻으며 \"이제 사랑하는 가족에게 돌아간다\"고 뇌에게 신호를 주세요."
+                analysis: "스트레스를 받으면 뇌는 그 에너지를 배출할 안전한 대상을 찾는데, 슬프게도 그게 가족인 경우가 많습니다. 이를 '걷어차인 고양이 효과'라고 합니다. 이는 뇌가 공적 영역과 사적 영역 사이에 감정의 방화벽을 세우지 못해 일어나는 '감정 오염' 상태입니다.",
+                presc: "\"퇴근길의 리셋 버튼.\"<br><br>현관문을 '감정 소독기'라고 상상하세요. 밖에서의 감정은 문밖에서 털고, 손을 씻으며 뇌에게 신호를 주세요.<br>\"나는 이제 회사원이 아니다. 가족의 품으로 돌아간다.\"<br>이 '감정의 칸막이'가 당신의 가족을 지켜줍니다."
             },
             { 
                 title: "인지적 경직성",
                 q: "회의나 대화 중, 내 경험과 생각, 감정에 치우쳐 상대방의 말을 있는 그대로 듣지 못하거나, 나와 상반된 의견을 받아들이는 것이 어렵게 느껴지시나요?", 
-                analysis: "\"내가 맞아!\"라는 확신에 빠지면 뇌는 도파민을 분비하여 쾌감을 느낍니다. 남의 말을 듣지 않고 반박할 때 즐거움을 느끼는 것은 뇌가 굳어가는 '인지적 경직성'의 위험 신호입니다.",
-                presc: "\"판단 유보의 3초.\"<br>\"아니야\"라는 말이 올라올 때 딱 3초만 삼키고, \"그렇게 생각할 수도 있겠구나\"라고 되뇌어보세요. 그 3초가 당신을 현자로 만듭니다."
+                analysis: "\"내가 맞아!\"라는 확신에 빠지면 뇌는 도파민을 분비하여 쾌감을 느낍니다. 남의 말을 듣지 않고 반박할 때 즐거움을 느끼는 것은, 뇌가 말랑말랑함을 잃고 굳어가는 '인지적 경직성'의 위험 신호입니다.",
+                presc: "\"판단 유보의 3초.\"<br><br>\"아니야\"라는 말이 올라올 때 딱 3초만 삼키고, 마음속으로 되뇌어보세요.<br>\"그렇게 생각할 수도 있겠구나.\"<br>그 짧은 3초의 멈춤과 인정이 당신을 꽉 막힌 '꼰대'가 아닌 존경받는 '현자'로 만들어줍니다."
             },
             { 
                 title: "자극 반응",
                 q: "누군가 나를 비난하거나 무례하게 굴었을 때, 즉각적으로 얼굴이 붉어지거나 언성을 높여 반박하게 되나요? 또는 마음 속으로 느끼는 불쾌감이 2분을 넘어갈 때가 있나요?", 
-                analysis: "자극이 오자마자 화를 내는 것은 '편도체 하이재킹'을 당한 것입니다. 이성의 뇌가 상황을 파악하기도 전에, 감정의 뇌가 운전대를 뺏어 폭주하는 비상사태입니다.",
-                presc: "\"6초의 여유를 두세요.\"<br>이성의 뇌가 다시 작동하는 데는 약 6초가 걸립니다. 욱하는 순간 숫자를 6까지 세거나 물을 한 잔 마시세요. 야수에서 인간으로 돌아옵니다."
+                analysis: "자극이 오자마자 화를 내는 것은 '편도체 하이재킹'을 당한 것입니다. 이성의 뇌가 상황을 파악하기도 전에, 감정의 뇌가 운전대를 뺏어 '싸우거나 도망가라'는 비상벨을 울리며 폭주하는 상태입니다.",
+                presc: "\"마법의 6초를 확보하세요.\"<br><br>전전두엽이 다시 작동하는 데는 약 6초가 걸립니다. 욱하는 순간 숫자를 6까지 세거나 물을 한 잔 마시세요. 그 짧은 시간이 당신을 본능적인 '야수'에서 이성적인 '인간'으로 되돌려 놓습니다."
             },
             { 
                 title: "사회적 비교",
                 q: "SNS에서 타인의 화려한 여행이나 성공, 행복한 모습을 보았을 때, '좋아요'를 누르면서도 속으로는 부러움을 넘어 '나는 왜 이렇게 살지?' 하는 초라함이나 질투를 느끼시나요? 그 질투나 묘한 불안감이 2분 이상 나의 감정과 생각에 영향을 끼치나요?", 
-                analysis: "SNS는 타인의 '하이라이트'와 나의 '비하인드'를 비교하게 만드는 불공정한 무대입니다. 질투가 2분 이상 지속되면 뇌는 '사회적 패배 스트레스' 모드로 전환되어 자존감을 갉아먹습니다.",
-                presc: "\"질투를 동력으로 바꾸세요.\"<br>질투는 \"나도 저것을 원한다\"는 뇌의 신호입니다. 자책 대신 \"나도 어떻게 하면 저렇게 될 수 있을까?\"라고 질문을 바꾸면 성장의 연료가 됩니다."
+                analysis: "SNS는 타인의 '하이라이트'와 나의 '비하인드'를 비교하게 만드는 불공정한 무대입니다. 질투가 2분 이상 지속되면 뇌는 '사회적 패배 스트레스' 모드로 전환되어 스스로 자존감을 갉아먹습니다.",
+                presc: "\"질투를 나침반으로 사용하세요.\"<br><br>질투는 \"나도 저것을 원한다\"는 뇌의 솔직한 신호입니다. 자책 대신 질문을 바꾸세요.<br>\"내 뇌가 저걸 원하는구나? 그럼 나도 어떻게 하면 저기로 갈 수 있을까?\"<br>질투의 에너지가 성장의 연료로 바뀝니다."
             },
             { 
-                title: "주의력 근육",
+                title: "자주력 & 몰입",
                 q: "눈을 감고 호흡에만 집중하려 해보세요. 1분도 채 되지 않아 다른 생각에 빠지거나 감정에 흘러가나요? 호흡에만 오롯이 집중할 수 있는 시간을 확인해보세요.", 
-                analysis: "호흡에 집중하는 것은 전전두엽의 '주의력 근육'을 쓰는 고강도 운동입니다. 1분도 못 버티는 것은 주의력 근육이 매우 약해져 있다는 뜻이지만, 운동 효과가 가장 좋을 때라는 뜻이기도 합니다.",
-                presc: "\"돌아오는 것이 수행입니다.\"<br>딴생각을 했다고 자책하지 마세요. \"아, 딴생각했네?\" 하고 웃으며 다시 호흡으로 돌아오는 그 과정 자체가 강력한 수양입니다.",
+                analysis: "호흡 집중은 뇌의 CEO인 전전두엽의 '주의력 근육'을 쓰는 고강도 훈련입니다. 1분도 못 버티는 것은 근육이 약해져 있다는 뜻이지만, 운동 효과가 가장 좋을 때라는 뜻이기도 합니다. 잡념을 알아차리는 순간 신경망이 연결됩니다.",
+                presc: "\"돌아오는 것이 곧 수행입니다.\"<br><br>딴생각을 했다고 자책하지 마세요. \"아, 딴생각했네?\" 하고 웃으며 다시 호흡으로 돌아오세요. 100번 도망가면 100번 데려오면 됩니다. 그 과정 자체가 삶의 주도권을 회복하는 가장 확실한 길입니다.",
                 answers: ["1분 미만 (어렵다)", "3분 정도", "5분 정도", "10분 정도", "60분 이상"] 
             }
         ];
 
         const defaultAnswers = ["매우 자주 (거의 매일)", "자주 (주 3~4회)", "가끔 (주 1~2회)", "별로 없음 (월 1~2회)", "전혀 없음"];
         
-        // 등급 데이터
         const levels = [
             { min: 0, max: 10, name: "🔴 뇌 과부하 경보 (위험)", desc: "마음 엔진이 과열되어 브레이크가 듣지 않는 상태입니다. 사소한 자극에도 무너지기 쉽습니다. 지금 당장 멈춤과 휴식이 필요합니다." },
             { min: 11, max: 20, name: "🟠 감정의 롤러코스터 (주의)", desc: "외부 환경에 따라 마음이 자주 흔들립니다. 수양의 필요성은 알지만 실전에서 놓치는 경우가 많습니다. 의식적인 훈련이 시급합니다." },
@@ -248,12 +251,16 @@
             { min: 31, max: 40, name: "🔵 부동심의 마스터 (최우수)", desc: "태산처럼 묵직한 '철석같은 멘탈'입니다. 어떤 경계가 와도 요란하지 않고, 있는 그대로 비추어보는 진공의 지혜가 빛나고 있습니다." }
         ];
 
+        // ----------------------------------------------------
+        // [2] 로직 구현
+        // ----------------------------------------------------
         let currentIdx = 0;
         let scores = [];
 
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            window.scrollTo(0, 0); // 화면 전환 시 상단으로 이동
         }
 
         function startTest() {
@@ -279,23 +286,20 @@
                 const btn = document.createElement('button');
                 btn.className = 'answer-btn';
                 btn.innerText = ans;
-                btn.onclick = () => showFeedback(index); // 바로 다음 질문이 아니라 피드백 화면으로
+                btn.onclick = () => showFeedback(index); 
                 container.appendChild(btn);
             });
         }
 
-        // [NEW] 피드백 보여주기
         function showFeedback(scoreIndex) {
-            scores.push(scoreIndex); // 점수 저장
+            scores.push(scoreIndex); // 점수 저장 (0~4점)
             
             const qItem = questions[currentIdx];
-            
-            // 피드백 내용 채우기
             document.getElementById('fb-title').innerText = `Q${currentIdx + 1}. ${qItem.title}`;
             document.getElementById('fb-analysis').innerText = qItem.analysis;
-            document.getElementById('fb-presc').innerHTML = qItem.presc; // HTML 태그(br) 적용을 위해 innerHTML 사용
+            document.getElementById('fb-presc').innerHTML = qItem.presc; 
 
-            // 버튼 텍스트 설정 (마지막 질문이면 결과보기)
+            // 버튼 설정
             const nextBtn = document.getElementById('next-btn');
             if (currentIdx < questions.length - 1) {
                 nextBtn.innerText = "다음 질문으로 →";
@@ -320,11 +324,13 @@
             let currentScore = 0;
             const scoreElement = document.getElementById('total-score');
             
-            // 점수 애니메이션
+            showScreen('result-screen');
+
+            // 점수 카운트 업 애니메이션
             const interval = setInterval(() => {
                 if (currentScore >= total) {
                     clearInterval(interval);
-                    // 점수 계산 끝난 후 등급 표시
+                    // 점수 계산 후 등급 표시
                     let result = levels.find(l => total >= l.min && total <= l.max) || levels[0];
                     document.getElementById('level-name').innerText = result.name;
                     document.getElementById('level-desc').innerText = result.desc;
@@ -333,8 +339,6 @@
                     scoreElement.innerText = currentScore;
                 }
             }, 30);
-
-            showScreen('result-screen');
         }
 
         function restartTest() {
