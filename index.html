@@ -8,15 +8,15 @@
     <style>
         /* ----- 디자인 테마 ----- */
         :root {
-            --bg-color: #FFF8ED;       /* 배경: 따뜻한 크림색 */
-            --btn-color: #A67B5B;      /* 포인트: 샌드 브라운 */
-            --btn-hover: #8E6548;      /* 호버: 딥 브라운 */
-            --text-main: #2C2C2C;      /* 텍스트: 짙은 차콜 */
+            --bg-color: #FFF8ED;       /* 배경 */
+            --btn-color: #A67B5B;      /* 메인 컬러 */
+            --btn-hover: #8E6548;      /* 호버 컬러 */
+            --text-main: #2C2C2C;      /* 메인 텍스트 */
             --text-sub: #555555;       /* 서브 텍스트 */
             --card-bg: #FFFFFF;        /* 카드 배경 */
             --shadow: 0 4px 20px rgba(166, 123, 91, 0.15);
-            --analysis-bg: #F4F4F4;    /* 분석 박스 배경 */
-            --presc-bg: #FFF9F0;       /* 처방 박스 배경 */
+            --analysis-bg: #F4F4F4;    
+            --presc-bg: #FFF9F0;       
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
@@ -35,7 +35,7 @@
             display: flex; flex-direction: column;
         }
 
-        /* 화면 전환 애니메이션 */
+        /* 화면 전환 */
         .screen {
             display: none; flex-direction: column; width: 100%; min-height: 100%;
             padding: 30px 24px;
@@ -48,20 +48,28 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* [1] 시작 화면 */
-        #start-screen { align-items: center; text-align: center; justify-content: center; padding-top: 60px; }
-        .main-title { font-size: 2.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 10px; letter-spacing: -1px; }
-        .sub-title { font-size: 1.05rem; color: var(--text-sub); line-height: 1.6; margin-bottom: 50px; font-weight: 400; }
+        /* 공통 스타일 */
+        .main-title { font-size: 2.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 10px; letter-spacing: -1px; text-align: center; }
+        .sub-title { font-size: 1.05rem; color: var(--text-sub); line-height: 1.6; margin-bottom: 50px; font-weight: 400; text-align: center; }
         
-        .start-btn, .next-btn {
+        .btn {
             background-color: var(--btn-color); color: white;
-            font-size: 1.2rem; font-weight: 700; padding: 18px 0;
+            font-size: 1.1rem; font-weight: 700; padding: 18px 0;
             width: 100%; border-radius: 20px; border: none; cursor: pointer;
             box-shadow: 0 8px 20px rgba(166, 123, 91, 0.3);
-            transition: transform 0.1s; margin-bottom: 20px;
+            transition: transform 0.1s; margin-bottom: 15px; text-align: center;
         }
-        .start-btn:active, .next-btn:active { transform: scale(0.96); background-color: var(--btn-hover); }
-        .illustration-box { width: 220px; height: 220px; margin-bottom: 40px; opacity: 0.9; }
+        .btn:active { transform: scale(0.96); background-color: var(--btn-hover); }
+        
+        /* 참고문헌 버튼 (보조 버튼 스타일) */
+        .btn-secondary {
+            background-color: transparent; color: var(--text-sub);
+            border: 2px solid #E6DCCF; box-shadow: none;
+            font-size: 1rem;
+        }
+        .btn-secondary:hover { border-color: var(--btn-color); color: var(--btn-color); }
+
+        .illustration-box { width: 220px; height: 220px; margin: 0 auto 40px; opacity: 0.9; }
 
         /* [2] 질문 화면 */
         .top-bar { display: flex; align-items: center; margin-bottom: 30px; }
@@ -69,10 +77,8 @@
         .progress-bar { height: 100%; background-color: var(--btn-color); width: 0%; transition: width 0.4s ease; }
         .q-num { font-size: 1.1rem; font-weight: 800; color: var(--btn-color); margin-bottom: 12px; letter-spacing: 1px; }
         .q-text { font-size: 1.35rem; font-weight: 700; line-height: 1.5; color: var(--text-main); margin-bottom: 40px; word-break: keep-all; }
-        
-        .answer-list { display: flex; flex-direction: column; gap: 12px; }
         .answer-btn {
-            width: 100%; padding: 18px 24px;
+            width: 100%; padding: 18px 24px; margin-bottom: 12px;
             background-color: var(--card-bg); border: 2px solid transparent;
             border-radius: 18px; font-size: 1.1rem; font-weight: 500;
             color: var(--text-sub); text-align: left; cursor: pointer;
@@ -80,33 +86,32 @@
         }
         .answer-btn:hover { border-color: var(--btn-color); background-color: #FAF6F3; color: var(--btn-color); transform: translateY(-2px); }
 
-        /* [3] 피드백 화면 (분석 & 처방) */
+        /* [3] 피드백 화면 */
         #feedback-screen { padding-top: 40px; }
-        .feedback-card {
-            background-color: var(--card-bg); border-radius: 24px; padding: 25px;
-            box-shadow: var(--shadow); margin-bottom: 20px;
-        }
+        .feedback-card { background-color: var(--card-bg); border-radius: 24px; padding: 25px; box-shadow: var(--shadow); margin-bottom: 20px; }
         .feedback-label { font-size: 0.9rem; font-weight: 800; color: #999; margin-bottom: 10px; display: block; letter-spacing: 1px;}
         .feedback-title { font-size: 1.4rem; font-weight: 800; color: var(--btn-color); margin-bottom: 20px; }
-        
-        .analysis-box {
-            background-color: var(--analysis-bg); border-radius: 16px; padding: 20px; margin-bottom: 16px;
-        }
-        .analysis-header { font-weight: 800; color: #555; margin-bottom: 8px; font-size: 1rem; display: flex; align-items: center; gap: 5px; }
-        .analysis-text { font-size: 0.95rem; line-height: 1.6; color: #444; word-break: keep-all; }
-
-        .presc-box {
-            background-color: var(--presc-bg); border-radius: 16px; padding: 20px;
-            border-left: 5px solid var(--btn-color);
-        }
-        .presc-header { font-weight: 800; color: var(--btn-color); margin-bottom: 8px; font-size: 1rem; display: flex; align-items: center; gap: 5px; }
-        .presc-text { font-size: 1rem; line-height: 1.6; color: #333; word-break: keep-all; font-weight: 600; }
+        .analysis-box, .presc-box { border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+        .analysis-box { background-color: var(--analysis-bg); }
+        .presc-box { background-color: var(--presc-bg); border-left: 5px solid var(--btn-color); }
+        .header-text { font-weight: 800; margin-bottom: 8px; font-size: 1rem; color: #555; }
+        .body-text { font-size: 0.95rem; line-height: 1.6; color: #444; word-break: keep-all; }
 
         /* [4] 결과 화면 */
-        .result-card { background-color: var(--card-bg); width: 100%; padding: 40px 24px; border-radius: 30px; box-shadow: var(--shadow); margin-bottom: 40px; text-align: center; }
+        .result-card { background-color: var(--card-bg); width: 100%; padding: 40px 24px; border-radius: 30px; box-shadow: var(--shadow); margin-bottom: 30px; text-align: center; }
         .total-score { font-size: 4rem; font-weight: 900; color: var(--btn-color); line-height: 1; margin: 15px 0 5px; }
         .level-badge { display: inline-block; padding: 8px 18px; background-color: #F5EBE0; color: #8E6548; border-radius: 30px; font-weight: 700; margin-bottom: 25px; }
         .level-desc { font-size: 1.05rem; line-height: 1.7; color: var(--text-sub); word-break: keep-all; }
+
+        /* [5] 참고문헌 화면 (New) */
+        #ref-screen { background-color: #FFF; }
+        .ref-container { padding-bottom: 40px; }
+        .ref-section-title { font-size: 1.2rem; font-weight: 800; color: var(--btn-color); margin: 30px 0 15px; border-bottom: 2px solid #F0F0F0; padding-bottom: 10px; }
+        .ref-item { margin-bottom: 20px; }
+        .ref-q { font-size: 0.9rem; font-weight: 700; color: #333; margin-bottom: 4px; }
+        .ref-paper { font-size: 0.85rem; color: #666; line-height: 1.4; }
+        .ref-journal { font-weight: 700; color: #2C2C2C; font-style: italic; }
+        .ref-desc { font-size: 0.85rem; color: #888; margin-top: 4px; display: block; }
 
     </style>
 </head>
@@ -115,7 +120,7 @@
     <div id="app-container">
         
         <section id="start-screen" class="screen active">
-            <div class="illustration-box">
+            <div class="illustration-box" style="margin-top:20px;">
                 <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="100" cy="100" r="90" fill="#EFE5D9" />
                     <circle cx="100" cy="100" r="75" fill="#E6DCCF" />
@@ -127,7 +132,7 @@
             </div>
             <h1 class="main-title">수양력 점검기</h1>
             <p class="sub-title">뇌과학과 마음 공부의 만남<br>당신의 마음 근육은 안녕하신가요?</p>
-            <button class="start-btn" onclick="startTest()">측정 시작하기</button>
+            <button class="btn" onclick="startTest()">측정 시작하기</button>
         </section>
 
         <section id="question-screen" class="screen">
@@ -147,16 +152,16 @@
                 <h2 class="feedback-title" id="fb-title">Q1. 이완 실패</h2>
                 
                 <div class="analysis-box">
-                    <div class="analysis-header">🧠 뇌과학적 분석</div>
-                    <div class="analysis-text" id="fb-analysis">분석 내용이 들어갑니다.</div>
+                    <div class="header-text">🧠 뇌과학적 분석</div>
+                    <div class="body-text" id="fb-analysis">분석 내용</div>
                 </div>
 
                 <div class="presc-box">
-                    <div class="presc-header">💊 닥터의 처방</div>
-                    <div class="presc-text" id="fb-presc">처방 내용이 들어갑니다.</div>
+                    <div class="header-text" style="color:var(--btn-color);">💊 닥터의 처방</div>
+                    <div class="body-text" id="fb-presc" style="font-weight:600;">처방 내용</div>
                 </div>
             </div>
-            <button class="next-btn" id="next-btn" onclick="nextQuestion()">다음 질문으로 →</button>
+            <button class="btn" id="next-btn" onclick="nextQuestion()">다음 질문으로 →</button>
         </section>
 
         <section id="result-screen" class="screen">
@@ -166,18 +171,26 @@
                 <div class="level-badge" id="level-name">분석 중...</div>
                 <div class="level-desc" id="level-desc">결과 설명</div>
             </div>
-            <div style="text-align:center; color:#555; margin-bottom:20px; line-height:1.6;">
-                수고하셨습니다!<br>문항별 닥터의 처방을 다시 되새기며<br>단단한 마음 근육을 키워보세요.
+            <div style="text-align:center; color:#555; margin-bottom:30px; line-height:1.6; font-size:0.95rem;">
+                수고하셨습니다!<br>닥터의 처방을 다시 되새기며<br>단단한 마음 근육을 키워보세요.
             </div>
-            <button class="start-btn" onclick="restartTest()">다시 검사하기</button>
+            <button class="btn" onclick="restartTest()">다시 검사하기</button>
+            <button class="btn btn-secondary" onclick="showRefs()">📖 참고 문헌 (Scientific Evidence)</button>
+        </section>
+
+        <section id="ref-screen" class="screen">
+            <h2 class="main-title" style="font-size:1.6rem; margin-bottom:5px;">Science behind NMI</h2>
+            <p class="sub-title" style="margin-bottom:20px; font-size:0.9rem;">이 점검기는 세계 최고 권위의<br>학술지 논문을 기반으로 설계되었습니다.</p>
+            
+            <div class="ref-container" id="ref-content">
+                </div>
+            <button class="btn" onclick="closeRefs()">닫기</button>
         </section>
 
     </div>
 
     <script>
-        // ----------------------------------------------------
-        // [1] 데이터: 질문, 분석, 처방 (최종 확정본)
-        // ----------------------------------------------------
+        // 1. 질문 데이터
         const questions = [
             { 
                 title: "이완 실패",
@@ -231,7 +244,7 @@
                 title: "사회적 비교",
                 q: "SNS에서 타인의 화려한 여행이나 성공, 행복한 모습을 보았을 때, '좋아요'를 누르면서도 속으로는 부러움을 넘어 '나는 왜 이렇게 살지?' 하는 초라함이나 질투를 느끼시나요? 그 질투나 묘한 불안감이 2분 이상 나의 감정과 생각에 영향을 끼치나요?", 
                 analysis: "SNS는 타인의 '하이라이트'와 나의 '비하인드'를 비교하게 만드는 불공정한 무대입니다. 질투가 2분 이상 지속되면 뇌는 '사회적 패배 스트레스' 모드로 전환되어 스스로 자존감을 갉아먹습니다.",
-                presc: "\"질투를 나침반으로 사용하세요.\"<br><br>질투는 \"나도 저것을 원한다\"는 뇌의 솔직한 신호입니다. 자책 대신 질문을 바꾸세요.<br>\"내 뇌가 저걸 원하는구나? 그럼 나도 어떻게 하면 저기로 갈 수 있을까?\"<br>질투의 에너지가 성장의 연료로 바뀝니다."
+                presc: "\"질투를 나침반으로 사용하세요.\"<br><br>질투는 \"나도 저것을 원한다\"는 뇌의 솔직한 신호입니다. 자책 대신 질문을 바꾸세요.<br>\"내 뇌가 저걸 원하는구나? 그럼 나도 어떻게 하면 저렇게 될 수 있을까?\"<br>질투의 에너지가 성장의 연료로 바뀝니다."
             },
             { 
                 title: "자주력 & 몰입",
@@ -251,8 +264,36 @@
             { min: 31, max: 40, name: "🔵 부동심의 마스터 (최우수)", desc: "태산처럼 묵직한 '철석같은 멘탈'입니다. 어떤 경계가 와도 요란하지 않고, 있는 그대로 비추어보는 진공의 지혜가 빛나고 있습니다." }
         ];
 
+        // 2. 참고 문헌 데이터
+        const references = [
+            { 
+                category: "1. 핵심 이론 (NMI 대전제)", 
+                items: [
+                    { q: "마음이 떠돌면 불행하다 (Focus = Happiness)", paper: "Killingsworth, M. A., & Gilbert, D. T. (2010). A wandering mind is an unhappy mind.", journal: "Science", desc: "잡념(Mind-wandering)이 행복도를 낮춘다는 사실을 증명" },
+                    { q: "수양은 뇌를 바꾼다 (Neuroplasticity)", paper: "Tang, Y. Y., et al. (2015). The neuroscience of mindfulness meditation.", journal: "Nature Reviews Neuroscience", desc: "명상이 대뇌 피질 두께를 증가시킴을 입증" },
+                    { q: "주의력이 감정을 조절한다", paper: "Davidson, R. J., & McEwen, B. S. (2012). Social influences on neuroplasticity.", journal: "Nature Neuroscience", desc: "전전두엽이 편도체를 통제하는 메커니즘 규명" }
+                ]
+            },
+            { 
+                category: "2. 문항별 근거 (Scientific Evidence)", 
+                items: [
+                    { q: "Q1. DMN 과활성화", paper: "Raichle, M. E., et al. (2001). A default mode of brain function.", journal: "PNAS", desc: "디폴트 모드 네트워크(DMN)의 최초 규명" },
+                    { q: "Q2. 팝콘 브레인", paper: "Wilson, T. D., et al. (2014). The challenges of the disengaged mind.", journal: "Science", desc: "현대인이 지루함보다 전기 충격을 선호하는 심리 입증" },
+                    { q: "Q3. 반추와 우울", paper: "Nolen-Hoeksema, S., et al. (2008). Rethinking Rumination.", journal: "Perspectives on Psychological Science", desc: "반추가 회복을 지연시키는 핵심 요인임을 증명" },
+                    { q: "Q4. 주의력 잔여물", paper: "Leroy, S. (2009). The challenge of attention residue.", journal: "Org. Behavior & Human Decision Processes", desc: "잦은 업무 전환이 인지 능력을 저하시킴을 입증" },
+                    { q: "Q5. 보상 예측 오류", paper: "Berridge, K. C., & Robinson, T. E. (2016). Liking, wanting, and addiction.", journal: "American Psychologist", desc: "원하는 것(Wanting)과 좋아하는 것(Liking)의 차이 규명" },
+                    { q: "Q6. 전위 공격성", paper: "Sapolsky, R. M. (2005). The influence of social hierarchy on primate health.", journal: "Science", desc: "스트레스가 약자에게 전가되는 생물학적 메커니즘" },
+                    { q: "Q7. 확증 편향", paper: "Kaplan, J. T., et al. (2016). Neural correlates of maintaining one's beliefs.", journal: "Scientific Reports (Nature)", desc: "반대 의견을 접할 때 뇌가 물리적 위협을 느낌을 확인" },
+                    { q: "Q8. 편도체 납치", paper: "Arnsten, A. F. T. (2009). Stress signalling pathways.", journal: "Nature Reviews Neuroscience", desc: "스트레스 시 전전두엽 기능이 마비되는 기전 규명" },
+                    { q: "Q9. 질투와 통증", paper: "Takahashi, H., et al. (2009). Neural correlates of envy.", journal: "Science", desc: "질투심이 뇌의 통증 중추를 자극함을 증명" },
+                    { q: "Q10. 명상과 뇌", paper: "Lazar, S. W., et al. (2005). Meditation experience is associated with increased cortical thickness.", journal: "NeuroReport", desc: "명상이 뇌 구조를 물리적으로 변화시킴을 입증" }
+                ]
+            }
+        ];
+
+
         // ----------------------------------------------------
-        // [2] 로직 구현
+        // [로직 구현]
         // ----------------------------------------------------
         let currentIdx = 0;
         let scores = [];
@@ -260,7 +301,7 @@
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            window.scrollTo(0, 0); // 화면 전환 시 상단으로 이동
+            window.scrollTo(0, 0);
         }
 
         function startTest() {
@@ -292,14 +333,13 @@
         }
 
         function showFeedback(scoreIndex) {
-            scores.push(scoreIndex); // 점수 저장 (0~4점)
+            scores.push(scoreIndex);
             
             const qItem = questions[currentIdx];
             document.getElementById('fb-title').innerText = `Q${currentIdx + 1}. ${qItem.title}`;
             document.getElementById('fb-analysis').innerText = qItem.analysis;
             document.getElementById('fb-presc').innerHTML = qItem.presc; 
 
-            // 버튼 설정
             const nextBtn = document.getElementById('next-btn');
             if (currentIdx < questions.length - 1) {
                 nextBtn.innerText = "다음 질문으로 →";
@@ -326,11 +366,9 @@
             
             showScreen('result-screen');
 
-            // 점수 카운트 업 애니메이션
             const interval = setInterval(() => {
                 if (currentScore >= total) {
                     clearInterval(interval);
-                    // 점수 계산 후 등급 표시
                     let result = levels.find(l => total >= l.min && total <= l.max) || levels[0];
                     document.getElementById('level-name').innerText = result.name;
                     document.getElementById('level-desc').innerText = result.desc;
@@ -343,6 +381,35 @@
 
         function restartTest() {
             showScreen('start-screen');
+        }
+
+        // [참고문헌 화면 제어]
+        function showRefs() {
+            const container = document.getElementById('ref-content');
+            
+            // 내용 생성 (최초 1회만 생성하거나 매번 생성)
+            if(container.innerHTML.trim() === "") {
+                references.forEach(section => {
+                    let html = `<div class="ref-section-title">${section.category}</div>`;
+                    section.items.forEach(item => {
+                        html += `
+                            <div class="ref-item">
+                                <div class="ref-q">${item.q}</div>
+                                <div class="ref-paper">
+                                    ${item.paper} <span class="ref-journal">[${item.journal}]</span>
+                                </div>
+                                <span class="ref-desc">💡 ${item.desc}</span>
+                            </div>
+                        `;
+                    });
+                    container.innerHTML += html;
+                });
+            }
+            showScreen('ref-screen');
+        }
+
+        function closeRefs() {
+            showScreen('result-screen');
         }
     </script>
 </body>
