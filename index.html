@@ -3,413 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>수양력 점검기</title>
-    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    
+    <title>Mind Study | 마음 대조표</title>
+    
+    <meta name="description" content="종교를 넘어, 내 마음을 스스로 들여다보는 Mind Study 도구입니다.">
+    <meta property="og:title" content="Mind Study Lab">
+    <meta property="og:description" content="Spiritual But Not Religious. 나를 위한 마음공부 기록.">
+
     <style>
-        /* ----- 디자인 테마 ----- */
-        :root {
-            --bg-color: #FFF8ED;       /* 배경 */
-            --btn-color: #A67B5B;      /* 메인 컬러 */
-            --btn-hover: #8E6548;      /* 호버 컬러 */
-            --text-main: #2C2C2C;      /* 메인 텍스트 */
-            --text-sub: #555555;       /* 서브 텍스트 */
-            --card-bg: #FFFFFF;        /* 카드 배경 */
-            --shadow: 0 4px 20px rgba(166, 123, 91, 0.15);
-            --analysis-bg: #F4F4F4;    
-            --presc-bg: #FFF9F0;       
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
-        
+        /* Mind Study에 어울리는 차분한 디자인 */
         body { 
-            background-color: #EAEAEA; 
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; 
+            font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; 
+            padding: 20px; 
+            line-height: 1.6; 
+            background-color: #f9f9f9; /* 눈이 편안한 배경색 */
+            color: #333;
         }
-
-        #app-container {
-            width: 100%; max-width: 420px; min-height: 100vh;
-            background-color: var(--bg-color);
-            position: relative; overflow-y: auto;
-            box-shadow: 0 0 25px rgba(0,0,0,0.1);
-            display: flex; flex-direction: column;
+        h2 { color: #2c3e50; text-align: center; }
+        .brand-name { 
+            font-size: 0.9em; 
+            color: #666; 
+            text-align: center; 
+            margin-bottom: 30px; 
+            letter-spacing: 2px;
         }
-
-        /* 화면 전환 */
-        .screen {
-            display: none; flex-direction: column; width: 100%; min-height: 100%;
-            padding: 30px 24px;
-            animation: fadeIn 0.4s ease-out;
-        }
-        .screen.active { display: flex; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 공통 스타일 */
-        .main-title { font-size: 2.4rem; font-weight: 800; color: var(--text-main); margin-bottom: 10px; letter-spacing: -1px; text-align: center; }
-        .sub-title { font-size: 1.05rem; color: var(--text-sub); line-height: 1.6; margin-bottom: 50px; font-weight: 400; text-align: center; }
         
-        .btn {
-            background-color: var(--btn-color); color: white;
-            font-size: 1.1rem; font-weight: 700; padding: 18px 0;
-            width: 100%; border-radius: 20px; border: none; cursor: pointer;
-            box-shadow: 0 8px 20px rgba(166, 123, 91, 0.3);
-            transition: transform 0.1s; margin-bottom: 15px; text-align: center;
-        }
-        .btn:active { transform: scale(0.96); background-color: var(--btn-hover); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        th, td { border-bottom: 1px solid #eee; padding: 15px; text-align: center; }
+        th { background-color: #f4f6f8; color: #555; }
         
-        /* 참고문헌 버튼 (보조 버튼 스타일) */
-        .btn-secondary {
-            background-color: transparent; color: var(--text-sub);
-            border: 2px solid #E6DCCF; box-shadow: none;
-            font-size: 1rem;
+        /* 수입/지출 대신 마음의 용어로 변경 가능 */
+        .income { color: #27ae60; font-weight: bold; } /* 긍정/수입 */
+        .expense { color: #c0392b; font-weight: bold; } /* 부정/지출 */
+        
+        input, select, button {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
-        .btn-secondary:hover { border-color: var(--btn-color); color: var(--btn-color); }
-
-        .illustration-box { width: 220px; height: 220px; margin: 0 auto 40px; opacity: 0.9; }
-
-        /* [2] 질문 화면 */
-        .top-bar { display: flex; align-items: center; margin-bottom: 30px; }
-        .progress-bg { flex: 1; height: 6px; background-color: #E6DCCF; border-radius: 3px; margin: 0 12px; overflow: hidden; }
-        .progress-bar { height: 100%; background-color: var(--btn-color); width: 0%; transition: width 0.4s ease; }
-        .q-num { font-size: 1.1rem; font-weight: 800; color: var(--btn-color); margin-bottom: 12px; letter-spacing: 1px; }
-        .q-text { font-size: 1.35rem; font-weight: 700; line-height: 1.5; color: var(--text-main); margin-bottom: 40px; word-break: keep-all; }
-        .answer-btn {
-            width: 100%; padding: 18px 24px; margin-bottom: 12px;
-            background-color: var(--card-bg); border: 2px solid transparent;
-            border-radius: 18px; font-size: 1.1rem; font-weight: 500;
-            color: var(--text-sub); text-align: left; cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.2s;
+        button {
+            background-color: #2c3e50;
+            color: white;
+            cursor: pointer;
+            width: 100%;
         }
-        .answer-btn:hover { border-color: var(--btn-color); background-color: #FAF6F3; color: var(--btn-color); transform: translateY(-2px); }
-
-        /* [3] 피드백 화면 */
-        #feedback-screen { padding-top: 40px; }
-        .feedback-card { background-color: var(--card-bg); border-radius: 24px; padding: 25px; box-shadow: var(--shadow); margin-bottom: 20px; }
-        .feedback-label { font-size: 0.9rem; font-weight: 800; color: #999; margin-bottom: 10px; display: block; letter-spacing: 1px;}
-        .feedback-title { font-size: 1.4rem; font-weight: 800; color: var(--btn-color); margin-bottom: 20px; }
-        .analysis-box, .presc-box { border-radius: 16px; padding: 20px; margin-bottom: 16px; }
-        .analysis-box { background-color: var(--analysis-bg); }
-        .presc-box { background-color: var(--presc-bg); border-left: 5px solid var(--btn-color); }
-        .header-text { font-weight: 800; margin-bottom: 8px; font-size: 1rem; color: #555; }
-        .body-text { font-size: 0.95rem; line-height: 1.6; color: #444; word-break: keep-all; }
-
-        /* [4] 결과 화면 */
-        .result-card { background-color: var(--card-bg); width: 100%; padding: 40px 24px; border-radius: 30px; box-shadow: var(--shadow); margin-bottom: 30px; text-align: center; }
-        .total-score { font-size: 4rem; font-weight: 900; color: var(--btn-color); line-height: 1; margin: 15px 0 5px; }
-        .level-badge { display: inline-block; padding: 8px 18px; background-color: #F5EBE0; color: #8E6548; border-radius: 30px; font-weight: 700; margin-bottom: 25px; }
-        .level-desc { font-size: 1.05rem; line-height: 1.7; color: var(--text-sub); word-break: keep-all; }
-
-        /* [5] 참고문헌 화면 (New) */
-        #ref-screen { background-color: #FFF; }
-        .ref-container { padding-bottom: 40px; }
-        .ref-section-title { font-size: 1.2rem; font-weight: 800; color: var(--btn-color); margin: 30px 0 15px; border-bottom: 2px solid #F0F0F0; padding-bottom: 10px; }
-        .ref-item { margin-bottom: 20px; }
-        .ref-q { font-size: 0.9rem; font-weight: 700; color: #333; margin-bottom: 4px; }
-        .ref-paper { font-size: 0.85rem; color: #666; line-height: 1.4; }
-        .ref-journal { font-weight: 700; color: #2C2C2C; font-style: italic; }
-        .ref-desc { font-size: 0.85rem; color: #888; margin-top: 4px; display: block; }
-
+        button:hover { background-color: #34495e; }
+        
+        .total-section { 
+            margin-top: 20px; 
+            text-align: right;
+            font-size: 1.2em; 
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
+    <h2>Mind Study</h2>
+    <div class="brand-name">Spiritual But Not Religious</div>
+    
+    <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <input type="text" id="desc" placeholder="내용 (예: 명상 30분, 화냄)" style="width: 100%; box-sizing: border-box;">
+        <div style="display: flex; gap: 10px;">
+            <input type="number" id="amount" placeholder="점수/금액" style="flex: 1;">
+            <select id="type" style="flex: 1;">
+                <option value="income">플러스 (수입/선행)</option>
+                <option value="expense">마이너스 (지출/과실)</option>
+            </select>
+        </div>
+        <button onclick="addItem()">기록하기</button>
+    </div>
 
-    <div id="app-container">
-        
-        <section id="start-screen" class="screen active">
-            <div class="illustration-box" style="margin-top:20px;">
-                <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="100" cy="100" r="90" fill="#EFE5D9" />
-                    <circle cx="100" cy="100" r="75" fill="#E6DCCF" />
-                    <path d="M100,60 C110,60 118,68 118,78 C118,88 110,96 100,96 C90,96 82,88 82,78 C82,68 90,60 100,60 Z" fill="#A67B5B"/>
-                    <path d="M65,150 C65,120 100,100 100,100 C100,100 135,120 135,150 L65,150 Z" fill="#A67B5B"/>
-                    <path d="M140,140 Q160,100 180,110 Q170,140 140,140 Z" fill="#7D9D75"/>
-                    <path d="M60,140 Q40,100 20,110 Q30,140 60,140 Z" fill="#7D9D75"/>
-                </svg>
-            </div>
-            <h1 class="main-title">수양력 점검기</h1>
-            <p class="sub-title">뇌과학과 마음 공부의 만남<br>당신의 마음 근육은 안녕하신가요?</p>
-            <button class="btn" onclick="startTest()">측정 시작하기</button>
-        </section>
+    <table>
+        <thead>
+            <tr>
+                <th>내용</th>
+                <th>구분</th>
+                <th>가치</th>
+            </tr>
+        </thead>
+        <tbody id="list">
+        </tbody>
+    </table>
 
-        <section id="question-screen" class="screen">
-            <div class="top-bar">
-                <span style="font-weight:700; color:var(--btn-color);">Test</span>
-                <div class="progress-bg"><div class="progress-bar" id="progress"></div></div>
-                <span id="page-num" style="font-size:0.9rem; color:#999; font-weight:600;">1/10</span>
-            </div>
-            <div class="q-num" id="q-num">Q1.</div>
-            <div class="q-text" id="q-text">질문 내용</div>
-            <div class="answer-list" id="answers-container"></div>
-        </section>
-
-        <section id="feedback-screen" class="screen">
-            <div class="feedback-card">
-                <span class="feedback-label">DOCTOR'S COMMENT</span>
-                <h2 class="feedback-title" id="fb-title">Q1. 이완 실패</h2>
-                
-                <div class="analysis-box">
-                    <div class="header-text">🧠 뇌과학적 분석</div>
-                    <div class="body-text" id="fb-analysis">분석 내용</div>
-                </div>
-
-                <div class="presc-box">
-                    <div class="header-text" style="color:var(--btn-color);">💊 닥터의 처방</div>
-                    <div class="body-text" id="fb-presc" style="font-weight:600;">처방 내용</div>
-                </div>
-            </div>
-            <button class="btn" id="next-btn" onclick="nextQuestion()">다음 질문으로 →</button>
-        </section>
-
-        <section id="result-screen" class="screen">
-            <div class="result-card">
-                <div style="color:#888; font-weight:600; margin-bottom:8px;">나의 수양력 점수</div>
-                <div class="total-score"><span id="total-score">0</span><span style="font-size:1.8rem; color:#CCC; font-weight:500;">/40</span></div>
-                <div class="level-badge" id="level-name">분석 중...</div>
-                <div class="level-desc" id="level-desc">결과 설명</div>
-            </div>
-            <div style="text-align:center; color:#555; margin-bottom:30px; line-height:1.6; font-size:0.95rem;">
-                수고하셨습니다!<br>닥터의 처방을 다시 되새기며<br>단단한 마음 근육을 키워보세요.
-            </div>
-            <button class="btn" onclick="restartTest()">다시 검사하기</button>
-            <button class="btn btn-secondary" onclick="showRefs()">📖 참고 문헌 (Scientific Evidence)</button>
-        </section>
-
-        <section id="ref-screen" class="screen">
-            <h2 class="main-title" style="font-size:1.6rem; margin-bottom:5px;">Science behind NMI</h2>
-            <p class="sub-title" style="margin-bottom:20px; font-size:0.9rem;">이 점검기는 세계 최고 권위의<br>학술지 논문을 기반으로 설계되었습니다.</p>
-            
-            <div class="ref-container" id="ref-content">
-                </div>
-            <button class="btn" onclick="closeRefs()">닫기</button>
-        </section>
-
+    <div class="total-section">
+        현재 마음 잔액: <span id="total">0</span>
+    </div>
+    
+    <div style="text-align: center; margin-top: 40px; font-size: 0.8em; color: #aaa;">
+        © 2026 Mind Study. All rights reserved.
     </div>
 
     <script>
-        // 1. 질문 데이터
-        const questions = [
-            { 
-                title: "이완 실패",
-                q: "잠자리에 누웠을 때, 생각(걱정)이 꼬리를 물어 10분 넘게 잠들지 못하고 스마트폰을 보거나 뒤척이시나요?", 
-                analysis: "10분이 넘도록 생각이 멈추지 않는 것은 뇌의 'DMN(디폴트 모드 네트워크)'이 과열되어 침대를 '치열한 생각의 전장'으로 착각하고 있다는 증거입니다. 이때 스마트폰을 켜는 것은 뇌를 강제로 각성시켜 수면을 방해하는 악순환을 만듭니다.",
-                presc: "\"뇌의 '종료 버튼'을 확실히 눌러주세요.\"<br><br>생각을 멈추려 애쓰지 말고, 잠들기 30분 전 해야 할 일을 종이에 적는 '브레인 덤프'를 하세요. 그리고 선언하세요.<br>\"종이에 다 적어뒀으니 내일 아침에 처리하자. 이제는 온전히 쉴 시간이야.\""
-            },
-            { 
-                title: "도파민 중독",
-                q: "엘리베이터나 신호 대기 등 3~5분의 짧은 시간, 지금 이 순간에 온전히 머무르지 못하고 스마트폰을 보거나 다른 생각에 빠지시나요?", 
-                analysis: "3~5분의 짧은 공백조차 견디지 못하는 것은 뇌의 '지루함 내성 회로'가 퇴화하여 '팝콘 브레인' 현상이 일어난 것입니다. 이는 스마트폰을 보는 것이 아니라 '지금 이 순간(Here and Now)'으로부터 도망치고 있는 상태입니다.",
-                presc: "\"지루함을 '뇌의 청소 시간'으로 활용하세요.\"<br><br>뇌는 아무것도 하지 않을 때 정보를 정리합니다. 오늘부터 하루 딱 한 번, 핸드폰 대신 '지금 내 발바닥의 느낌'이나 '나의 호흡'에 집중하는 시간을 1분만 가져보세요. 그 짧은 '디지털 공백'이 최고의 영양제가 됩니다."
-            },
-            { 
-                title: "회복탄력성",
-                q: "과거의 실수나 좋지 않은 기억이 떠오르면, 그 감정을 금방 털어내지 못하고 5분 넘게 현재의 기분에 영향을 받으시나요?", 
-                analysis: "뇌과학적으로 감정의 화학물질이 뇌를 휩쓸고 지나가는 시간은 단 90초입니다. 5분 넘게 우울하다면, 생리적 현상이 아니라 당신이 그 기억을 반추(Rumination)하며 스스로 불에 기름을 붓고 있는 것입니다.",
-                presc: "\"90초 룰을 기억하고, '재방송'임을 알아차리세요.\"<br><br>불쾌한 기억이 떠오르면 깊은 심호흡을 세 번 하세요. 뇌가 호흡에 집중하며 90초를 보내면 감정의 파도는 잠잠해지고, 이성의 뇌(전전두엽)가 다시 켜집니다. 깨어난 전전두엽에게 주도권을 쥐여주세요."
-            },
-            { 
-                title: "주의력 잔여물",
-                q: "업무나 공부 중 알림을 확인한 뒤 흩어진 마음을 다잡는 데 2분 이상 걸리거나, 알림이 없어도 수시로 연락이나 SNS, 숏츠 등이 궁금해 일에만 온전히 집중하지 못하시나요?", 
-                analysis: "알림을 확인하고 돌아갈 때 뇌에는 '주의력 잔여물'이 남습니다. 특히 숏츠는 뇌의 '새로움 추구 본능'을 자극하여 계속 도파민을 찾게 만듭니다. 2분 안에 집중하지 못하는 것은 뇌가 '인지적 전환 비용'을 과다하게 치르고 있다는 신호입니다.",
-                presc: "\"뇌에게 '방해 금지 구역'을 선물하세요.\"<br><br>미네소타 대학 연구에 따르면 잦은 전환은 IQ를 10점 이상 떨어뜨립니다. 중요한 일을 할 때는 스마트폰을 치우거나 '방해 금지 모드'를 켜세요. '지금은 오직 이것만 한다'는 환경 설정이 뇌의 효율을 지키는 유일한 길입니다."
-            },
-            { 
-                title: "충동 통제",
-                q: "쇼핑이나 야식, 게임 등 순간적인 충동이 일어날 때, '정말 필요한가?' 하고 잠시 멈춰 생각하지 못하고 바로 행동으로 옮겨 후회한 적이 있으신가요?", 
-                analysis: "도파민은 \"저걸 사면 행복할 거야\"라고 유혹(Wanting)하지만, 막상 얻고 나면 행복감(Liking)은 금방 사라집니다. 이 뇌의 '예측 오류'에 속아, 자극과 반응 사이의 '멈춤' 버튼이 고장 난 상태입니다.",
-                presc: "\"파도에서 벗어나 해안가로 나오세요.\"<br><br>충동은 파도와 같아서 세게 밀려왔더라도 반드시 잠잠해집니다. 휩쓸리지 말고 해안가로 나와 쉬세요. 한 시간 후, 혹은 다음 날 아침에 다시 생각해보세요. 그 뜨거운 파도는 거짓말처럼 사라져 있을 것입니다."
-            },
-            { 
-                title: "감정 전이",
-                q: "직장이나 밖에서 기분 나쁜 일을 겪었을 때, 그 감정을 잘 추스르지 못해 가족이나 만만한 사람에게 퉁명스럽게 대하거나, 혹은 감정이 바로 정리되지 않고 앙금처럼 마음에 오래 남아있나요?", 
-                analysis: "스트레스를 받으면 뇌는 그 에너지를 배출할 안전한 대상을 찾는데, 슬프게도 그게 가족인 경우가 많습니다. 이를 '걷어차인 고양이 효과'라고 합니다. 이는 뇌가 공적 영역과 사적 영역 사이에 감정의 방화벽을 세우지 못해 일어나는 '감정 오염' 상태입니다.",
-                presc: "\"퇴근길의 리셋 버튼.\"<br><br>현관문을 '감정 소독기'라고 상상하세요. 밖에서의 감정은 문밖에서 털고, 손을 씻으며 뇌에게 신호를 주세요.<br>\"나는 이제 회사원이 아니다. 가족의 품으로 돌아간다.\"<br>이 '감정의 칸막이'가 당신의 가족을 지켜줍니다."
-            },
-            { 
-                title: "인지적 경직성",
-                q: "회의나 대화 중, 내 경험과 생각, 감정에 치우쳐 상대방의 말을 있는 그대로 듣지 못하거나, 나와 상반된 의견을 받아들이는 것이 어렵게 느껴지시나요?", 
-                analysis: "\"내가 맞아!\"라는 확신에 빠지면 뇌는 도파민을 분비하여 쾌감을 느낍니다. 남의 말을 듣지 않고 반박할 때 즐거움을 느끼는 것은, 뇌가 말랑말랑함을 잃고 굳어가는 '인지적 경직성'의 위험 신호입니다.",
-                presc: "\"판단 유보의 3초.\"<br><br>\"아니야\"라는 말이 올라올 때 딱 3초만 삼키고, 마음속으로 되뇌어보세요.<br>\"그렇게 생각할 수도 있겠구나.\"<br>그 짧은 3초의 멈춤과 인정이 당신을 꽉 막힌 '꼰대'가 아닌 존경받는 '현자'로 만들어줍니다."
-            },
-            { 
-                title: "자극 반응",
-                q: "누군가 나를 비난하거나 무례하게 굴었을 때, 즉각적으로 얼굴이 붉어지거나 언성을 높여 반박하게 되나요? 또는 마음 속으로 느끼는 불쾌감이 2분을 넘어갈 때가 있나요?", 
-                analysis: "자극이 오자마자 화를 내는 것은 '편도체 하이재킹'을 당한 것입니다. 이성의 뇌가 상황을 파악하기도 전에, 감정의 뇌가 운전대를 뺏어 '싸우거나 도망가라'는 비상벨을 울리며 폭주하는 상태입니다.",
-                presc: "\"마법의 6초를 확보하세요.\"<br><br>전전두엽이 다시 작동하는 데는 약 6초가 걸립니다. 욱하는 순간 숫자를 6까지 세거나 물을 한 잔 마시세요. 그 짧은 시간이 당신을 본능적인 '야수'에서 이성적인 '인간'으로 되돌려 놓습니다."
-            },
-            { 
-                title: "사회적 비교",
-                q: "SNS에서 타인의 화려한 여행이나 성공, 행복한 모습을 보았을 때, '좋아요'를 누르면서도 속으로는 부러움을 넘어 '나는 왜 이렇게 살지?' 하는 초라함이나 질투를 느끼시나요? 그 질투나 묘한 불안감이 2분 이상 나의 감정과 생각에 영향을 끼치나요?", 
-                analysis: "SNS는 타인의 '하이라이트'와 나의 '비하인드'를 비교하게 만드는 불공정한 무대입니다. 질투가 2분 이상 지속되면 뇌는 '사회적 패배 스트레스' 모드로 전환되어 스스로 자존감을 갉아먹습니다.",
-                presc: "\"질투를 나침반으로 사용하세요.\"<br><br>질투는 \"나도 저것을 원한다\"는 뇌의 솔직한 신호입니다. 자책 대신 질문을 바꾸세요.<br>\"내 뇌가 저걸 원하는구나? 그럼 나도 어떻게 하면 저렇게 될 수 있을까?\"<br>질투의 에너지가 성장의 연료로 바뀝니다."
-            },
-            { 
-                title: "자주력 & 몰입",
-                q: "눈을 감고 호흡에만 집중하려 해보세요. 1분도 채 되지 않아 다른 생각에 빠지거나 감정에 흘러가나요? 호흡에만 오롯이 집중할 수 있는 시간을 확인해보세요.", 
-                analysis: "호흡 집중은 뇌의 CEO인 전전두엽의 '주의력 근육'을 쓰는 고강도 훈련입니다. 1분도 못 버티는 것은 근육이 약해져 있다는 뜻이지만, 운동 효과가 가장 좋을 때라는 뜻이기도 합니다. 잡념을 알아차리는 순간 신경망이 연결됩니다.",
-                presc: "\"돌아오는 것이 곧 수행입니다.\"<br><br>딴생각을 했다고 자책하지 마세요. \"아, 딴생각했네?\" 하고 웃으며 다시 호흡으로 돌아오세요. 100번 도망가면 100번 데려오면 됩니다. 그 과정 자체가 삶의 주도권을 회복하는 가장 확실한 길입니다.",
-                answers: ["1분 미만 (어렵다)", "3분 정도", "5분 정도", "10분 정도", "60분 이상"] 
-            }
-        ];
+        let balance = 0;
 
-        const defaultAnswers = ["매우 자주 (거의 매일)", "자주 (주 3~4회)", "가끔 (주 1~2회)", "별로 없음 (월 1~2회)", "전혀 없음"];
-        
-        const levels = [
-            { min: 0, max: 10, name: "🔴 뇌 과부하 경보 (위험)", desc: "마음 엔진이 과열되어 브레이크가 듣지 않는 상태입니다. 사소한 자극에도 무너지기 쉽습니다. 지금 당장 멈춤과 휴식이 필요합니다." },
-            { min: 11, max: 20, name: "🟠 감정의 롤러코스터 (주의)", desc: "외부 환경에 따라 마음이 자주 흔들립니다. 수양의 필요성은 알지만 실전에서 놓치는 경우가 많습니다. 의식적인 훈련이 시급합니다." },
-            { min: 21, max: 30, name: "🟢 멘탈 피트니스 (양호)", desc: "마음의 근육이 단단하게 잡혀가고 있습니다. 가끔 흔들려도 곧바로 알아차리고 평온함을 되찾는 회복탄력성을 가졌습니다." },
-            { min: 31, max: 40, name: "🔵 부동심의 마스터 (최우수)", desc: "태산처럼 묵직한 '철석같은 멘탈'입니다. 어떤 경계가 와도 요란하지 않고, 있는 그대로 비추어보는 진공의 지혜가 빛나고 있습니다." }
-        ];
+        function addItem() {
+            const desc = document.getElementById('desc').value;
+            const amount = parseInt(document.getElementById('amount').value);
+            const type = document.getElementById('type').value;
 
-        // 2. 참고 문헌 데이터
-        const references = [
-            { 
-                category: "1. 핵심 이론 (NMI 대전제)", 
-                items: [
-                    { q: "마음이 떠돌면 불행하다 (Focus = Happiness)", paper: "Killingsworth, M. A., & Gilbert, D. T. (2010). A wandering mind is an unhappy mind.", journal: "Science", desc: "잡념(Mind-wandering)이 행복도를 낮춘다는 사실을 증명" },
-                    { q: "수양은 뇌를 바꾼다 (Neuroplasticity)", paper: "Tang, Y. Y., et al. (2015). The neuroscience of mindfulness meditation.", journal: "Nature Reviews Neuroscience", desc: "명상이 대뇌 피질 두께를 증가시킴을 입증" },
-                    { q: "주의력이 감정을 조절한다", paper: "Davidson, R. J., & McEwen, B. S. (2012). Social influences on neuroplasticity.", journal: "Nature Neuroscience", desc: "전전두엽이 편도체를 통제하는 메커니즘 규명" }
-                ]
-            },
-            { 
-                category: "2. 문항별 근거 (Scientific Evidence)", 
-                items: [
-                    { q: "Q1. DMN 과활성화", paper: "Raichle, M. E., et al. (2001). A default mode of brain function.", journal: "PNAS", desc: "디폴트 모드 네트워크(DMN)의 최초 규명" },
-                    { q: "Q2. 팝콘 브레인", paper: "Wilson, T. D., et al. (2014). The challenges of the disengaged mind.", journal: "Science", desc: "현대인이 지루함보다 전기 충격을 선호하는 심리 입증" },
-                    { q: "Q3. 반추와 우울", paper: "Nolen-Hoeksema, S., et al. (2008). Rethinking Rumination.", journal: "Perspectives on Psychological Science", desc: "반추가 회복을 지연시키는 핵심 요인임을 증명" },
-                    { q: "Q4. 주의력 잔여물", paper: "Leroy, S. (2009). The challenge of attention residue.", journal: "Org. Behavior & Human Decision Processes", desc: "잦은 업무 전환이 인지 능력을 저하시킴을 입증" },
-                    { q: "Q5. 보상 예측 오류", paper: "Berridge, K. C., & Robinson, T. E. (2016). Liking, wanting, and addiction.", journal: "American Psychologist", desc: "원하는 것(Wanting)과 좋아하는 것(Liking)의 차이 규명" },
-                    { q: "Q6. 전위 공격성", paper: "Sapolsky, R. M. (2005). The influence of social hierarchy on primate health.", journal: "Science", desc: "스트레스가 약자에게 전가되는 생물학적 메커니즘" },
-                    { q: "Q7. 확증 편향", paper: "Kaplan, J. T., et al. (2016). Neural correlates of maintaining one's beliefs.", journal: "Scientific Reports (Nature)", desc: "반대 의견을 접할 때 뇌가 물리적 위협을 느낌을 확인" },
-                    { q: "Q8. 편도체 납치", paper: "Arnsten, A. F. T. (2009). Stress signalling pathways.", journal: "Nature Reviews Neuroscience", desc: "스트레스 시 전전두엽 기능이 마비되는 기전 규명" },
-                    { q: "Q9. 질투와 통증", paper: "Takahashi, H., et al. (2009). Neural correlates of envy.", journal: "Science", desc: "질투심이 뇌의 통증 중추를 자극함을 증명" },
-                    { q: "Q10. 명상과 뇌", paper: "Lazar, S. W., et al. (2005). Meditation experience is associated with increased cortical thickness.", journal: "NeuroReport", desc: "명상이 뇌 구조를 물리적으로 변화시킴을 입증" }
-                ]
-            }
-        ];
+            if (!desc || isNaN(amount)) return alert("내용과 숫자를 입력해주세요.");
 
-
-        // ----------------------------------------------------
-        // [로직 구현]
-        // ----------------------------------------------------
-        let currentIdx = 0;
-        let scores = [];
-
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            window.scrollTo(0, 0);
-        }
-
-        function startTest() {
-            currentIdx = 0;
-            scores = [];
-            updateQuestion();
-            showScreen('question-screen');
-        }
-
-        function updateQuestion() {
-            const qItem = questions[currentIdx];
-            document.getElementById('q-num').innerText = `Q${currentIdx + 1}.`;
-            document.getElementById('q-text').innerText = qItem.q;
-            document.getElementById('page-num').innerText = `${currentIdx + 1} / ${questions.length}`;
-            document.getElementById('progress').style.width = `${((currentIdx + 1) / questions.length) * 100}%`;
-
-            const container = document.getElementById('answers-container');
-            container.innerHTML = ''; 
-
-            const answers = qItem.answers || defaultAnswers;
-
-            answers.forEach((ans, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'answer-btn';
-                btn.innerText = ans;
-                btn.onclick = () => showFeedback(index); 
-                container.appendChild(btn);
-            });
-        }
-
-        function showFeedback(scoreIndex) {
-            scores.push(scoreIndex);
+            const list = document.getElementById('list');
+            const row = list.insertRow(0); // 최신 내용이 위로 오게 수정
             
-            const qItem = questions[currentIdx];
-            document.getElementById('fb-title').innerText = `Q${currentIdx + 1}. ${qItem.title}`;
-            document.getElementById('fb-analysis').innerText = qItem.analysis;
-            document.getElementById('fb-presc').innerHTML = qItem.presc; 
+            row.innerHTML = `
+                <td>${desc}</td>
+                <td class="${type}">${type === 'income' ? '플러스' : '마이너스'}</td>
+                <td>${amount.toLocaleString()}</td>
+            `;
 
-            const nextBtn = document.getElementById('next-btn');
-            if (currentIdx < questions.length - 1) {
-                nextBtn.innerText = "다음 질문으로 →";
-                nextBtn.onclick = nextQuestion;
-            } else {
-                nextBtn.innerText = "진단 결과 보기";
-                nextBtn.onclick = showResult;
-            }
+            if (type === 'income') balance += amount;
+            else balance -= amount;
 
-            showScreen('feedback-screen');
-        }
-
-        function nextQuestion() {
-            currentIdx++;
-            updateQuestion();
-            showScreen('question-screen');
-        }
-
-        function showResult() {
-            const total = scores.reduce((a, b) => a + b, 0);
+            document.getElementById('total').innerText = balance.toLocaleString();
             
-            let currentScore = 0;
-            const scoreElement = document.getElementById('total-score');
-            
-            showScreen('result-screen');
-
-            const interval = setInterval(() => {
-                if (currentScore >= total) {
-                    clearInterval(interval);
-                    let result = levels.find(l => total >= l.min && total <= l.max) || levels[0];
-                    document.getElementById('level-name').innerText = result.name;
-                    document.getElementById('level-desc').innerText = result.desc;
-                } else {
-                    currentScore++;
-                    scoreElement.innerText = currentScore;
-                }
-            }, 30);
-        }
-
-        function restartTest() {
-            showScreen('start-screen');
-        }
-
-        // [참고문헌 화면 제어]
-        function showRefs() {
-            const container = document.getElementById('ref-content');
-            
-            // 내용 생성 (최초 1회만 생성하거나 매번 생성)
-            if(container.innerHTML.trim() === "") {
-                references.forEach(section => {
-                    let html = `<div class="ref-section-title">${section.category}</div>`;
-                    section.items.forEach(item => {
-                        html += `
-                            <div class="ref-item">
-                                <div class="ref-q">${item.q}</div>
-                                <div class="ref-paper">
-                                    ${item.paper} <span class="ref-journal">[${item.journal}]</span>
-                                </div>
-                                <span class="ref-desc">💡 ${item.desc}</span>
-                            </div>
-                        `;
-                    });
-                    container.innerHTML += html;
-                });
-            }
-            showScreen('ref-screen');
-        }
-
-        function closeRefs() {
-            showScreen('result-screen');
+            document.getElementById('desc').value = '';
+            document.getElementById('amount').value = '';
         }
     </script>
 </body>
